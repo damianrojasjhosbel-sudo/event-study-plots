@@ -13,10 +13,10 @@
 // =============================================================
 
 // ============ CONFIG ============
-const DRIVE_FOLDER_ID = 'YOUR_DRIVE_FOLDER_ID';  // Google Drive folder ID
+const DRIVE_FOLDER_ID = '1tTAnGNItSXm-_KkY5ne74597KcchFGGj';  // Google Drive folder ID
 
-const GITHUB_TOKEN   = 'YOUR_GITHUB_TOKEN';       // Fine-grained personal access token
-const GITHUB_OWNER   = 'YOUR_GITHUB_USERNAME';     // GitHub username
+const GITHUB_TOKEN   = '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';       // Fine-grained personal access token
+const GITHUB_OWNER   = 'damianrojasjhosbel-sudo';     // GitHub username
 const GITHUB_REPO    = 'event-study-plots';        // Repo name
 const GITHUB_BRANCH  = 'main';
 // ================================
