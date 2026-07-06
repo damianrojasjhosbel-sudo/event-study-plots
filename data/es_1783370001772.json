@@ -1,0 +1,104 @@
+{
+  "id": "es_1783370001772",
+  "timestamp": "2026-07-06T20:33:22.738Z",
+  "paper": {
+    "title": "Trade Liberalization and Wages",
+    "authors": "Autor, Dorn & Hanson (2013)",
+    "link": "https://doi.org/10.1257/aer.103.6.2121",
+    "published": "yes",
+    "figure_number": "Figure 5",
+    "takeaway": "Trade exposure reduces wages in affected regions",
+    "description": "ontinuous treatment measuring import exposure per worker across US regions"
+  },
+  "treatment": {
+    "type": "continuous",
+    "changes": "multi_increase",
+    "values_at_period1": "three_plus"
+  },
+  "methodology": {
+    "code_language": "stata",
+    "code": "did_multiplegt_dyn wages region year trade_exposure, effects(6) placebo(4)",
+    "switchers_effect1": "890",
+    "n_effect1": "52000"
+  },
+  "results": {
+    "confidence_level": 95,
+    "observations": 10,
+    "data": [
+      {
+        "period": -4,
+        "estimate": 0.001,
+        "std_error": 0.005,
+        "lb": -0.008799999999999999,
+        "ub": 0.0108
+      },
+      {
+        "period": -3,
+        "estimate": -0.003,
+        "std_error": 0.006,
+        "lb": -0.014759999999999999,
+        "ub": 0.00876
+      },
+      {
+        "period": -2,
+        "estimate": 0.002,
+        "std_error": 0.005,
+        "lb": -0.0078,
+        "ub": 0.0118
+      },
+      {
+        "period": -1,
+        "estimate": -0.001,
+        "std_error": 0.006,
+        "lb": -0.01276,
+        "ub": 0.010759999999999999
+      },
+      {
+        "period": 1,
+        "estimate": -0.012,
+        "std_error": 0.007,
+        "lb": -0.02572,
+        "ub": 0.0017199999999999993
+      },
+      {
+        "period": 2,
+        "estimate": -0.025,
+        "std_error": 0.008,
+        "lb": -0.04068,
+        "ub": -0.009320000000000002
+      },
+      {
+        "period": 3,
+        "estimate": -0.031,
+        "std_error": 0.009,
+        "lb": -0.04864,
+        "ub": -0.01336
+      },
+      {
+        "period": 4,
+        "estimate": -0.028,
+        "std_error": 0.01,
+        "lb": -0.0476,
+        "ub": -0.008400000000000001
+      },
+      {
+        "period": 5,
+        "estimate": -0.035,
+        "std_error": 0.011,
+        "lb": -0.05656,
+        "ub": -0.013440000000000004
+      },
+      {
+        "period": 6,
+        "estimate": -0.042,
+        "std_error": 0.012,
+        "lb": -0.06552,
+        "ub": -0.018480000000000003
+      }
+    ]
+  },
+  "decision": {
+    "accepted": true,
+    "accepted_at": "2026-07-06T20:33:22.738Z"
+  }
+}
