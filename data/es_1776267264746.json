@@ -1,0 +1,104 @@
+{
+  "id": "es_1776267264746",
+  "timestamp": "2026-04-15T15:37:30.195Z",
+  "paper": {
+    "title": "State-Building and Rebellion in the Run-Up to the French Revolution",
+    "authors": "Michael Albertus and Victor Gay",
+    "link": "https://doi.org/10.1017/S0003055425101342",
+    "published": "yes",
+    "figure_number": "7",
+    "takeaway": "The establishment of a horse-post relay in a parish is associated with a subsequent increase in rebellion",
+    "description": "Figure 7 displays period-specific average treatment effects of opening a horse-post relay on rebellions in pre-Revolutionary France. The treatment is binary, staggered, and non-absorbing. The unit of observation is the parish-decade. The dataset is a panel of 35,287 parishes from the 1710s to the 1780s, combining an original GIS of horse-post relay openings and closures with a database of rebellions in Ancien Régime France. Identification stems from comparing changes in rebellion across parishes as relays open or close at different times. Figure 7 shows no meaningful pre-trends, which supports the parallel-trends assumption. After treatment, rebellion rises with a lag: effects appear in the second decade after relay establishment and grow thereafter. We interpret this pattern as evidence that deeper state penetration generated backlash among local populations through the material consequences of state centralization."
+  },
+  "treatment": {
+    "type": "binary",
+    "changes": "multi_either",
+    "values_at_period1": "two"
+  },
+  "methodology": {
+    "code_language": "stata",
+    "code": "did_multiplegt_dyn rebellions id_geofla decade post, effects(7) placebo(3) cluster(id_geofla) graph_off\n\nIMPORTANT NOTE: our figure highlights the relevant pre and post periods based on the number of switchers used in the identification at each period. Hence while we show 7 post and 3 pre periods, the relevant periods that we rely on for interpretation are 3 post and 2 pre periods. Check the published graph for more details. The generated graph below is somewhat a mis-characterization.",
+    "switchers_effect1": "1099",
+    "n_effect1": "244586"
+  },
+  "results": {
+    "confidence_level": 95,
+    "observations": 10,
+    "data": [
+      {
+        "period": -3,
+        "estimate": -0.0195458,
+        "std_error": 0.0186062,
+        "lb": -0.05601395199999999,
+        "ub": 0.016922351999999998
+      },
+      {
+        "period": -2,
+        "estimate": -0.0106965,
+        "std_error": 0.0126365,
+        "lb": -0.03546404,
+        "ub": 0.014071040000000002
+      },
+      {
+        "period": -1,
+        "estimate": -0.0139094,
+        "std_error": 0.0132701,
+        "lb": -0.039918796,
+        "ub": 0.012099996
+      },
+      {
+        "period": 1,
+        "estimate": -0.0035568,
+        "std_error": 0.0107675,
+        "lb": -0.0246611,
+        "ub": 0.0175475
+      },
+      {
+        "period": 2,
+        "estimate": 0.0325637,
+        "std_error": 0.0121634,
+        "lb": 0.008723436000000001,
+        "ub": 0.056403964
+      },
+      {
+        "period": 3,
+        "estimate": 0.0734257,
+        "std_error": 0.0160573,
+        "lb": 0.041953392,
+        "ub": 0.10489800799999999
+      },
+      {
+        "period": 4,
+        "estimate": 0.0728648,
+        "std_error": 0.0189508,
+        "lb": 0.03572123199999999,
+        "ub": 0.110008368
+      },
+      {
+        "period": 5,
+        "estimate": 0.144278,
+        "std_error": 0.0326585,
+        "lb": 0.08026733999999999,
+        "ub": 0.20828866
+      },
+      {
+        "period": 6,
+        "estimate": 0.1211428,
+        "std_error": 0.0302508,
+        "lb": 0.06185123199999999,
+        "ub": 0.180434368
+      },
+      {
+        "period": 7,
+        "estimate": 0.2462781,
+        "std_error": 0.0718107,
+        "lb": 0.105529128,
+        "ub": 0.38702707199999997
+      }
+    ]
+  },
+  "decision": {
+    "accepted": true,
+    "accepted_at": "2026-04-15T15:37:30.195Z"
+  }
+}

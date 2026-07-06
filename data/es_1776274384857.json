@@ -1,0 +1,237 @@
+{
+  "id": "es_1776274384857",
+  "timestamp": "2026-04-15T17:33:12.873Z",
+  "paper": {
+    "title": "To increase or not to increase? The impact of terrestrial protected areas on tree cover and the risk of species extinction",
+    "authors": "Oscar Andrés Martínez and Oscar Melo",
+    "link": "https://doi.org/10.1016/j.jenvman.2025.125386",
+    "published": "yes",
+    "figure_number": "Fig. A1 and Fig. A2",
+    "takeaway": "y-axis shows the effects of increasing the strict PAs positive values are a reduction in the risk of species extinction",
+    "description": "We assess the impact using a novel difference-in-differences (DiD) with Heterogenous and continuous treatment method on the Red List Index (RLI) and Tree Cover Loss (TCL) of the percentage increase in PA relative to the total area of the country. For these two indices, we found no significant effects of accumulated total protected area. We estimated dynamic effects from 2001 to 2020 for strictly protected areas (IUCN categories I-II), and the seven categories defined by the International Union for Conservation of Nature (IUCN)."
+  },
+  "treatment": {
+    "type": "continuous",
+    "changes": "multi_either",
+    "values_at_period1": "three_plus"
+  },
+  "methodology": {
+    "code_language": "stata",
+    "code": "did_multiplegt_old cumpercentreecoverloss ID year percentacum_PA, robust_dynamic dynamic(18) threshold_stable_treatment(1) reca(D_treeloss) breps(1000) average_effect placebo(9) longdiff_placebo jointtestplacebo  cluster(ID) graphoptions(title(Effect total Protected areas on tree cover loss))\nereturn list",
+    "switchers_effect1": "17",
+    "n_effect1": "180"
+  },
+  "results": {
+    "confidence_level": 95,
+    "observations": 29,
+    "data": [
+      {
+        "period": -1,
+        "estimate": -1,
+        "std_error": -1,
+        "lb": 0.96,
+        "ub": -2.96
+      },
+      {
+        "period": -1,
+        "estimate": -1,
+        "std_error": -1,
+        "lb": 0.96,
+        "ub": -2.96
+      },
+      {
+        "period": 0,
+        "estimate": 0,
+        "std_error": 0,
+        "lb": 0,
+        "ub": 0
+      },
+      {
+        "period": 0,
+        "estimate": 0,
+        "std_error": 0,
+        "lb": 0,
+        "ub": 0
+      },
+      {
+        "period": 0,
+        "estimate": 0,
+        "std_error": 0,
+        "lb": 0,
+        "ub": 0
+      },
+      {
+        "period": 0,
+        "estimate": 0,
+        "std_error": 0,
+        "lb": 0,
+        "ub": 0
+      },
+      {
+        "period": 0,
+        "estimate": 0,
+        "std_error": 0,
+        "lb": 0,
+        "ub": 0
+      },
+      {
+        "period": 0,
+        "estimate": 0,
+        "std_error": 0,
+        "lb": 0,
+        "ub": 0
+      },
+      {
+        "period": 0,
+        "estimate": 0,
+        "std_error": 0,
+        "lb": 0,
+        "ub": 0
+      },
+      {
+        "period": 0,
+        "estimate": 0,
+        "std_error": 0,
+        "lb": 0,
+        "ub": 0
+      },
+      {
+        "period": 0,
+        "estimate": 0,
+        "std_error": 0,
+        "lb": 0,
+        "ub": 0
+      },
+      {
+        "period": 0,
+        "estimate": 0,
+        "std_error": 0,
+        "lb": 0,
+        "ub": 0
+      },
+      {
+        "period": 0,
+        "estimate": 0,
+        "std_error": 0,
+        "lb": 0,
+        "ub": 0
+      },
+      {
+        "period": 0,
+        "estimate": 0,
+        "std_error": 0,
+        "lb": 0,
+        "ub": 0
+      },
+      {
+        "period": 0,
+        "estimate": 0,
+        "std_error": 0,
+        "lb": 0,
+        "ub": 0
+      },
+      {
+        "period": 0,
+        "estimate": 0,
+        "std_error": 0,
+        "lb": 0,
+        "ub": 0
+      },
+      {
+        "period": 0,
+        "estimate": 0,
+        "std_error": 0,
+        "lb": 0,
+        "ub": 0
+      },
+      {
+        "period": 0,
+        "estimate": 0,
+        "std_error": 0,
+        "lb": 0,
+        "ub": 0
+      },
+      {
+        "period": 0,
+        "estimate": 0,
+        "std_error": 0,
+        "lb": 0,
+        "ub": 0
+      },
+      {
+        "period": 0,
+        "estimate": 0,
+        "std_error": 0,
+        "lb": 0,
+        "ub": 0
+      },
+      {
+        "period": 0,
+        "estimate": 0,
+        "std_error": 0,
+        "lb": 0,
+        "ub": 0
+      },
+      {
+        "period": 0,
+        "estimate": 0,
+        "std_error": 0,
+        "lb": 0,
+        "ub": 0
+      },
+      {
+        "period": 0,
+        "estimate": 0,
+        "std_error": 0,
+        "lb": 0,
+        "ub": 0
+      },
+      {
+        "period": 0,
+        "estimate": 0,
+        "std_error": 0,
+        "lb": 0,
+        "ub": 0
+      },
+      {
+        "period": 0,
+        "estimate": 0,
+        "std_error": 0,
+        "lb": 0,
+        "ub": 0
+      },
+      {
+        "period": 0,
+        "estimate": 0,
+        "std_error": 0,
+        "lb": 0,
+        "ub": 0
+      },
+      {
+        "period": 0,
+        "estimate": 0,
+        "std_error": 0,
+        "lb": 0,
+        "ub": 0
+      },
+      {
+        "period": 0,
+        "estimate": 0,
+        "std_error": 0,
+        "lb": 0,
+        "ub": 0
+      },
+      {
+        "period": 0,
+        "estimate": 0,
+        "std_error": 0,
+        "lb": 0,
+        "ub": 0
+      }
+    ]
+  },
+  "decision": {
+    "accepted": true,
+    "accepted_at": "2026-04-15T17:33:12.873Z"
+  }
+}

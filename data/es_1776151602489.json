@@ -1,0 +1,90 @@
+{
+  "id": "es_1776151602489",
+  "timestamp": "2026-04-14T07:26:43.605Z",
+  "paper": {
+    "title": "Newspapers and Voter Turnout",
+    "authors": "Gentzkow, Shapiro & Sinkinson (2011)",
+    "link": "https://doi.org/10.1257/aer.101.7.2980",
+    "published": "",
+    "figure_number": "Figure 4",
+    "takeaway": "Newspaper entry increases voter turnout in US counties",
+    "description": "The treatment is the number of daily newspapers in a US county. Uses difference-in-differences with staggered and on-and-off treatment adoption. Data covers US counties from 1868 to 2004. Results show newspaper entry increases presidential voter turnout. Pre-trends are not significant."
+  },
+  "treatment": {
+    "type": "discrete",
+    "changes": "multi_either",
+    "values_at_period1": "three_plus"
+  },
+  "methodology": {
+    "code_language": "stata",
+    "code": "did_multiplegt_dyn prestout cnty90 year numdailies, effects(4) placebo(4) effects_equal(\"all\")",
+    "switchers_effect1": "1847",
+    "n_effect1": "39741"
+  },
+  "results": {
+    "confidence_level": 95,
+    "observations": 8,
+    "data": [
+      {
+        "period": -4,
+        "estimate": 0.00022,
+        "std_error": 0.00496,
+        "lb": -0.0095016,
+        "ub": 0.0099416
+      },
+      {
+        "period": -3,
+        "estimate": -0.00079,
+        "std_error": 0.00412,
+        "lb": -0.008865200000000002,
+        "ub": 0.007285200000000001
+      },
+      {
+        "period": -2,
+        "estimate": 0.00142,
+        "std_error": 0.00459,
+        "lb": -0.0075764,
+        "ub": 0.0104164
+      },
+      {
+        "period": -1,
+        "estimate": -0.0006,
+        "std_error": 0.00563,
+        "lb": -0.011634799999999999,
+        "ub": 0.0104348
+      },
+      {
+        "period": 1,
+        "estimate": 0.01436,
+        "std_error": 0.0053,
+        "lb": 0.003972,
+        "ub": 0.024748
+      },
+      {
+        "period": 2,
+        "estimate": 0.0191,
+        "std_error": 0.00598,
+        "lb": 0.007379199999999999,
+        "ub": 0.0308208
+      },
+      {
+        "period": 3,
+        "estimate": 0.02073,
+        "std_error": 0.00689,
+        "lb": 0.007225599999999999,
+        "ub": 0.0342344
+      },
+      {
+        "period": 4,
+        "estimate": 0.02729,
+        "std_error": 0.00834,
+        "lb": 0.010943599999999998,
+        "ub": 0.0436364
+      }
+    ]
+  },
+  "decision": {
+    "accepted": true,
+    "accepted_at": "2026-04-14T07:26:43.605Z"
+  }
+}

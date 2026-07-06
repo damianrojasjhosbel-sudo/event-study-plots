@@ -1,0 +1,371 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Event Study Plots · Dashboard</title>
+<link href="https://fonts.googleapis.com/css2?family=Source+Sans+3:wght@300;400;500;600;700&family=Playfair+Display:wght@700;900&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
+<style>
+:root {
+  --accent:#be9b7b; --accent-light:#d4b896; --accent-dark:#a07a5a;
+  --bg-dark-1:#1a1a2e; --bg-dark-2:#16213e; --bg-dark-3:#0f3460;
+  --text-light:#f0ead6; --text-cream:#e0d6c8; --text-muted:#888; --text-faded:#555;
+  --border-light:rgba(255,255,255,0.08); --border-medium:rgba(255,255,255,0.12);
+  --green:#22c55e; --red:#ef4444; --amber:#f59e0b; --blue-soft:#60a5fa;
+  --pre-color:#3b82f6; --post-color:#b91c1c; --zero-dot:#e0d6c8;
+}
+*{margin:0;padding:0;box-sizing:border-box;}
+body{font-family:'Source Sans 3',sans-serif;color:var(--text-cream);background:linear-gradient(160deg,#1a1a2e 0%,#16213e 50%,#0f3460 100%);min-height:100vh;overflow:hidden;}
+.app{display:flex;height:100vh;padding-top:48px;}
+
+/* NAV */
+.site-nav{position:fixed;top:0;left:0;right:0;z-index:100;background:rgba(26,26,46,0.95);backdrop-filter:blur(12px);border-bottom:1px solid rgba(255,255,255,0.08);display:flex;align-items:center;justify-content:space-between;padding:0 32px;height:48px;}
+.site-nav .nav-brand{font-family:'Playfair Display',serif;font-size:16px;font-weight:900;color:#f0ead6;text-decoration:none;letter-spacing:-0.3px;}
+.site-nav .nav-links{display:flex;gap:6px;}
+.site-nav .nav-link{font-size:13px;font-weight:600;padding:6px 14px;border-radius:6px;text-decoration:none;transition:all 0.2s;color:#888;}
+.site-nav .nav-link:hover{color:#e0d6c8;background:rgba(255,255,255,0.06);}
+.site-nav .nav-link.active{background:rgba(190,155,123,0.15);color:#be9b7b;border:1px solid rgba(190,155,123,0.3);}
+
+/* LEFT */
+.left{width:20%;min-width:280px;max-width:360px;background:rgba(255,255,255,0.03);border-right:1px solid var(--border-light);display:flex;flex-direction:column;backdrop-filter:blur(12px);}
+.left-header{padding:24px 24px 18px;border-bottom:1px solid var(--border-light);}
+.brand{margin-bottom:16px;}
+.brand-title{font-family:'Playfair Display',serif;font-size:24px;font-weight:900;color:var(--text-light);letter-spacing:-0.5px;line-height:1;margin-bottom:4px;}
+.brand-sub{font-size:12px;color:var(--text-muted);letter-spacing:0.3px;}
+.brand-sub strong{color:var(--accent);font-weight:600;}
+.metrics{display:grid;grid-template-columns:1fr 1fr;gap:8px;}
+.metric{background:rgba(255,255,255,0.04);padding:10px 8px;border-radius:10px;border:1px solid var(--border-light);text-align:center;}
+.metric-value{font-family:'Playfair Display',serif;font-size:22px;font-weight:700;color:var(--text-light);line-height:1;}
+.metric-label{font-size:9px;color:var(--text-muted);text-transform:uppercase;letter-spacing:0.6px;margin-top:3px;font-weight:500;}
+.search-section{padding:14px 24px;border-bottom:1px solid var(--border-light);}
+.search-input{width:100%;padding:9px 12px;border-radius:8px;border:1px solid var(--border-medium);background:rgba(255,255,255,0.04);color:#eee;font-family:inherit;font-size:13px;outline:none;transition:border 0.2s;}
+.search-input:focus{border-color:var(--accent);}
+.search-input::placeholder{color:var(--text-faded);}
+.list-section-header{padding:16px 24px 6px;font-size:10px;text-transform:uppercase;letter-spacing:0.8px;color:var(--accent);font-weight:700;}
+.paper-list-container{flex:1;overflow-y:auto;padding:4px 0 20px;}
+.paper-item{padding:14px 24px;cursor:pointer;border-left:3px solid transparent;transition:all 0.15s;}
+.paper-item:hover{background:rgba(255,255,255,0.03);}
+.paper-item.selected{background:rgba(190,155,123,0.08);border-left-color:var(--accent);}
+.paper-name{font-size:13px;color:var(--text-cream);font-weight:500;line-height:1.35;margin-bottom:4px;}
+.paper-item.selected .paper-name{color:var(--text-light);font-weight:600;}
+.paper-meta{display:flex;align-items:center;gap:6px;font-size:11px;color:var(--text-muted);flex-wrap:wrap;}
+.paper-badge{font-size:9px;padding:2px 7px;border-radius:5px;font-weight:700;letter-spacing:0.3px;text-transform:uppercase;white-space:nowrap;}
+.badge-binary{background:rgba(96,165,250,0.15);color:var(--blue-soft);border:1px solid rgba(96,165,250,0.3);}
+.badge-discrete{background:rgba(34,197,94,0.12);color:var(--green);border:1px solid rgba(34,197,94,0.3);}
+.badge-continuous{background:rgba(245,158,11,0.12);color:var(--amber);border:1px solid rgba(245,158,11,0.3);}
+
+/* RIGHT */
+.right{flex:1;display:flex;flex-direction:column;overflow:hidden;}
+.right-header{padding:28px 44px 22px;border-bottom:1px solid var(--border-light);background:rgba(255,255,255,0.02);}
+.breadcrumb{font-size:12px;color:var(--text-muted);margin-bottom:8px;letter-spacing:0.3px;font-weight:500;}
+.breadcrumb strong{color:var(--accent);}
+.paper-title{font-family:'Playfair Display',serif;font-size:26px;font-weight:900;color:var(--text-light);letter-spacing:-0.5px;margin-bottom:6px;line-height:1.15;}
+.paper-citation{font-size:14px;color:var(--text-cream);margin-bottom:14px;font-weight:300;}
+.paper-citation em{color:var(--accent);font-style:italic;font-weight:400;}
+.action-buttons{display:flex;gap:8px;flex-wrap:wrap;}
+.btn{padding:8px 16px;border-radius:8px;font-size:12px;font-weight:600;cursor:pointer;border:none;font-family:inherit;display:inline-flex;align-items:center;gap:6px;transition:all 0.2s;text-decoration:none;}
+.btn-primary{background:linear-gradient(135deg,var(--accent),var(--accent-dark));color:var(--bg-dark-1);box-shadow:0 4px 14px rgba(190,155,123,0.3);}
+.btn-primary:hover{transform:translateY(-1px);box-shadow:0 6px 18px rgba(190,155,123,0.4);}
+.btn-secondary{background:rgba(255,255,255,0.06);color:var(--text-cream);border:1px solid var(--border-medium);}
+.btn-secondary:hover{background:rgba(255,255,255,0.1);border-color:var(--accent);}
+.right-body{flex:1;overflow-y:auto;padding:24px 44px 40px;}
+.section{background:rgba(255,255,255,0.03);border:1px solid var(--border-light);border-radius:14px;padding:24px 28px;margin-bottom:20px;backdrop-filter:blur(8px);}
+.section-title{font-size:11px;text-transform:uppercase;letter-spacing:0.8px;color:var(--accent);font-weight:700;margin-bottom:16px;}
+.info-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:20px;}
+.info-item{display:flex;flex-direction:column;}
+.info-label{font-size:10px;color:var(--text-muted);margin-bottom:5px;font-weight:500;text-transform:uppercase;letter-spacing:0.4px;}
+.info-value{font-size:15px;color:var(--text-light);font-weight:600;}
+.info-value.large{font-family:'Playfair Display',serif;font-size:28px;font-weight:900;}
+.chart-container{position:relative;width:100%;height:380px;margin-top:8px;}
+.chart-canvas{width:100%;height:100%;}
+.code-wrapper{position:relative;}
+.code-block{background:rgba(0,0,0,0.4);border:1px solid var(--border-light);color:var(--text-cream);padding:18px 22px;border-radius:10px;font-family:'JetBrains Mono',monospace;font-size:12px;line-height:1.8;white-space:pre-wrap;overflow-x:auto;word-break:break-all;}
+.code-lang{display:inline-block;font-size:9px;padding:2px 8px;border-radius:4px;background:rgba(190,155,123,0.2);color:var(--accent);font-weight:700;text-transform:uppercase;letter-spacing:0.5px;margin-bottom:10px;}
+.copy-code-btn{position:absolute;top:10px;right:10px;padding:5px 12px;border-radius:6px;font-size:11px;font-weight:600;cursor:pointer;border:1px solid var(--border-medium);background:rgba(255,255,255,0.08);color:var(--text-cream);font-family:inherit;transition:all 0.2s;z-index:2;}
+.copy-code-btn:hover{background:rgba(255,255,255,0.15);border-color:var(--accent);}
+.description-text{font-size:14px;color:var(--text-cream);line-height:1.7;font-weight:300;}
+
+/* Loading */
+.loading-container{display:flex;flex-direction:column;align-items:center;justify-content:center;height:100%;gap:16px;}
+.spinner{width:32px;height:32px;border:3px solid var(--border-medium);border-top-color:var(--accent);border-radius:50%;animation:spin 0.8s linear infinite;}
+@keyframes spin{to{transform:rotate(360deg);}}
+.loading-text{font-size:14px;color:var(--text-muted);}
+.error-text{font-size:14px;color:var(--red);text-align:center;line-height:1.6;}
+
+/* Scrollbar */
+.paper-list-container::-webkit-scrollbar,.right-body::-webkit-scrollbar{width:5px;}
+.paper-list-container::-webkit-scrollbar-track,.right-body::-webkit-scrollbar-track{background:transparent;}
+.paper-list-container::-webkit-scrollbar-thumb,.right-body::-webkit-scrollbar-thumb{background:rgba(255,255,255,0.1);border-radius:3px;}
+
+/* Tooltip */
+.chart-tooltip{position:absolute;pointer-events:none;background:rgba(26,26,46,0.95);border:1px solid var(--accent);border-radius:8px;padding:10px 14px;font-size:12px;color:var(--text-cream);backdrop-filter:blur(8px);box-shadow:0 8px 24px rgba(0,0,0,0.4);opacity:0;transition:opacity 0.15s;z-index:10;white-space:nowrap;}
+.chart-tooltip.visible{opacity:1;}
+.tt-row{display:flex;justify-content:space-between;gap:16px;}
+.tt-label{color:var(--text-muted);}
+.tt-val{font-weight:600;color:var(--text-light);font-family:'JetBrains Mono',monospace;font-size:11px;}
+</style>
+</head>
+<body>
+
+<nav class="site-nav">
+  <a href="index.html" class="nav-brand">Event Studies</a>
+  <div class="nav-links">
+    <a href="index.html" class="nav-link active">Dashboard</a>
+    <a href="submit.html" class="nav-link">Submit</a>
+  </div>
+</nav>
+
+<div class="app">
+  <div class="left">
+    <div class="left-header">
+      <div class="brand">
+        <div class="brand-title">Event Studies</div>
+        <div class="brand-sub">ploter · <strong>did_multiplegt</strong></div>
+      </div>
+      <div class="metrics">
+        <div class="metric"><div class="metric-value" id="metricStudies">—</div><div class="metric-label">Studies</div></div>
+        <div class="metric"><div class="metric-value" id="metricN">—</div><div class="metric-label">Total N</div></div>
+      </div>
+    </div>
+    <div class="search-section">
+      <input class="search-input" id="searchInput" placeholder="Buscar paper, autor...">
+    </div>
+    <div class="paper-list-container" id="paperList">
+      <div class="loading-container" id="listLoading">
+        <div class="spinner"></div>
+        <div class="loading-text">Cargando estudios...</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="right">
+    <div class="right-header">
+      <div class="breadcrumb" id="breadcrumb"><strong>Event Study</strong> · Select a paper</div>
+      <div class="paper-title" id="paperTitle">Event Study Plots</div>
+      <div class="paper-citation" id="paperCitation">Loading studies...</div>
+      <div class="action-buttons" id="actionButtons"></div>
+    </div>
+    <div class="right-body" id="rightBody"></div>
+  </div>
+</div>
+
+<script>
+// =====================================================
+//  CONFIG — set these to match your setup
+// =====================================================
+const GITHUB_OWNER  = 'YOUR_USERNAME';
+const GITHUB_REPO   = 'event-study-plots';
+const GITHUB_BRANCH = 'main';
+const DATA_FOLDER   = 'data';
+
+// Optional: Apps Script GET URL (reads all studies from Google Drive)
+// If set, tries this first. If not, reads from GitHub.
+const APPS_SCRIPT_URL = '';  // e.g. 'https://script.google.com/macros/s/.../exec'
+// =====================================================
+
+let STUDIES=[], selectedIdx=-1, filteredStudies=[];
+
+async function loadStudies(){
+  try{
+    let studies=[];
+
+    // Strategy 1: Apps Script GET (reads from Google Drive directly)
+    if(APPS_SCRIPT_URL){
+      try{
+        const r=await fetch(APPS_SCRIPT_URL);
+        if(r.ok){const d=await r.json();if(d.success&&d.studies)studies=d.studies;}
+      }catch(e){console.warn('Apps Script fetch failed:',e);}
+    }
+
+    // Strategy 2: GitHub API
+    if(studies.length===0){
+      const apiUrl=`https://api.github.com/repos/${GITHUB_OWNER}/${GITHUB_REPO}/contents/${DATA_FOLDER}?ref=${GITHUB_BRANCH}`;
+      let files=[];
+      try{
+        const r=await fetch(apiUrl);
+        if(r.ok){const listing=await r.json();files=listing.filter(f=>f.name.endsWith('.json')).map(f=>f.name);}
+        else throw new Error('API '+r.status);
+      }catch{
+        // Fallback: manifest.json
+        try{const r=await fetch('manifest.json');if(r.ok)files=await r.json();}
+        catch{
+          // Fallback: try data/ listing
+          try{const r=await fetch('data/');if(r.ok){const t=await r.text();const m=t.match(/es_\d+\.json/g);if(m)files=[...new Set(m)];}}catch{}
+        }
+      }
+      for(const fname of files){
+        try{
+          let data;
+          const rawUrl=`https://raw.githubusercontent.com/${GITHUB_OWNER}/${GITHUB_REPO}/${GITHUB_BRANCH}/${DATA_FOLDER}/${fname}`;
+          try{const r=await fetch(rawUrl);if(r.ok)data=await r.json();else throw 0;}
+          catch{const r2=await fetch(`${DATA_FOLDER}/${fname}`);if(r2.ok)data=await r2.json();}
+          if(data&&data.paper&&data.paper.title&&!isTest(data))studies.push(data);
+        }catch(e){console.warn('Failed:',fname,e);}
+      }
+    }
+
+    if(studies.length===0){showError('No studies found. Check CONFIG in index.html (GITHUB_OWNER/REPO) or add .json files to data/.'); return;}
+
+    studies.sort((a,b)=>new Date(b.timestamp)-new Date(a.timestamp));
+    STUDIES=studies; filteredStudies=[...STUDIES];
+    renderApp();
+  }catch(e){showError('Error: '+e.message);}
+}
+
+function isTest(d){const t=(d.paper.title||'').toLowerCase().replace(/[^a-z]/g,'');return /^[asd]+$/.test(t);}
+function showError(m){document.getElementById('listLoading').innerHTML=`<div class="error-text">${m}</div>`;}
+
+function renderApp(){
+  document.getElementById('metricStudies').textContent=STUDIES.length;
+  const totalN=STUDIES.reduce((s,st)=>s+Number(st.methodology?.n_effect1||0),0);
+  document.getElementById('metricN').textContent=totalN.toLocaleString();
+  renderList();
+  if(STUDIES.length>0)selectStudy(0);
+}
+
+function renderList(){
+  const c=document.getElementById('paperList');
+  c.innerHTML='<div class="list-section-header">Event Studies · '+filteredStudies.length+'</div>';
+  filteredStudies.forEach((st,i)=>{
+    const d=document.createElement('div');d.className='paper-item'+(i===selectedIdx?' selected':'');
+    const tt=st.treatment?.type||'?';
+    const bc=tt==='binary'?'badge-binary':tt==='discrete'?'badge-discrete':'badge-continuous';
+    const obs=st.results?.observations||st.results?.data?.length||'?';
+    d.innerHTML=`<div class="paper-name">${st.paper.authors}</div>
+      <div class="paper-meta"><span>${st.paper.figure_number||''}</span><span style="color:var(--text-faded)">·</span><span>${obs} obs</span><span class="paper-badge ${bc}">${tt}</span></div>`;
+    d.addEventListener('click',()=>selectStudy(i));c.appendChild(d);
+  });
+}
+
+document.getElementById('searchInput').addEventListener('input',e=>{
+  const q=e.target.value.toLowerCase().trim();
+  filteredStudies=q?STUDIES.filter(s=>(s.paper.title+' '+s.paper.authors+' '+s.paper.description).toLowerCase().includes(q)):[...STUDIES];
+  selectedIdx=-1;renderList();if(filteredStudies.length>0)selectStudy(0);
+});
+
+function selectStudy(i){
+  selectedIdx=i;const st=filteredStudies[i];if(!st)return;
+  document.querySelectorAll('.paper-item').forEach((el,j)=>el.classList.toggle('selected',j===i));
+  const tt=st.treatment?.type||'?',fig=st.paper.figure_number||'',lang=st.methodology?.code_language?.toUpperCase()||'';
+  document.getElementById('breadcrumb').innerHTML=`<strong>${tt}</strong> · ${fig} · ${lang}`;
+  document.getElementById('paperTitle').textContent=st.paper.title;
+  document.getElementById('paperCitation').innerHTML=`${st.paper.authors} · <em>${fig}</em>`;
+  document.getElementById('actionButtons').innerHTML=`
+    <a href="${st.paper.link||'#'}" target="_blank" class="btn btn-primary"><span>↗</span> Paper / DOI</a>
+    <button class="btn btn-secondary" onclick="copyJSON()"><span>⧉</span> Copiar JSON</button>`;
+  renderBody(st);
+}
+
+function copyJSON(){const st=filteredStudies[selectedIdx];if(!st)return;navigator.clipboard.writeText(JSON.stringify(st,null,2));const b=document.querySelector('.action-buttons .btn-secondary');const o=b.innerHTML;b.innerHTML='<span>✓</span> Copiado';setTimeout(()=>b.innerHTML=o,1500);}
+function copyCode(){const st=filteredStudies[selectedIdx];if(!st)return;navigator.clipboard.writeText(st.methodology.code);const b=document.getElementById('copyCodeBtn');const o=b.textContent;b.textContent='✓ Copiado';setTimeout(()=>b.textContent=o,1500);}
+function esc(s){return s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');}
+
+function renderBody(st){
+  const body=document.getElementById('rightBody');
+  const obs=st.results?.observations||st.results?.data?.length||'?';
+  const ci=st.results?.confidence_level||95;
+  body.innerHTML=`
+    <div class="section"><div class="section-title">Event Study Plot · Estimate and ${ci}% CI</div>
+      <div class="chart-container" id="chartContainer"><canvas class="chart-canvas" id="esChart"></canvas><div class="chart-tooltip" id="tooltip"></div></div></div>
+    <div class="section"><div class="section-title">Methodology</div>
+      <div class="info-grid" style="margin-bottom:18px">
+        <div class="info-item"><span class="info-label">Treatment Type</span><span class="info-value">${st.treatment?.type||'?'}</span></div>
+        <div class="info-item"><span class="info-label">Switchers (effect 1)</span><span class="info-value large">${Number(st.methodology?.switchers_effect1||0).toLocaleString()}</span></div>
+        <div class="info-item"><span class="info-label">N (effect 1)</span><span class="info-value large">${Number(st.methodology?.n_effect1||0).toLocaleString()}</span></div>
+        <div class="info-item"><span class="info-label">Treatment Changes</span><span class="info-value">${(st.treatment?.changes||'').replace(/_/g,' ')}</span></div>
+        <div class="info-item"><span class="info-label">Values at Period 1</span><span class="info-value">${(st.treatment?.values_at_period1||'').replace(/_/g,' ')}</span></div>
+        <div class="info-item"><span class="info-label">Observations</span><span class="info-value">${obs}</span></div>
+      </div></div>
+    <div class="section"><div class="section-title">Estimation Code</div>
+      <div class="code-lang">${st.methodology?.code_language||''}</div>
+      <div class="code-wrapper"><button class="copy-code-btn" id="copyCodeBtn" onclick="copyCode()">Copiar</button>
+        <div class="code-block">${esc(st.methodology?.code||'')}</div></div></div>
+    <div class="section"><div class="section-title">Description</div>
+      <div class="description-text">${st.paper.description||''}</div></div>`;
+  requestAnimationFrame(()=>drawChart(st));
+}
+
+// ============ CHART ============
+function drawChart(st){
+  const canvas=document.getElementById('esChart');if(!canvas)return;
+  const container=document.getElementById('chartContainer'),tooltip=document.getElementById('tooltip');
+  const dpr=window.devicePixelRatio||1,rect=container.getBoundingClientRect();
+  canvas.width=rect.width*dpr;canvas.height=rect.height*dpr;
+  canvas.style.width=rect.width+'px';canvas.style.height=rect.height+'px';
+  const ctx=canvas.getContext('2d');ctx.scale(dpr,dpr);
+  const W=rect.width,H=rect.height,pad={top:40,right:30,bottom:50,left:75};
+  const plotW=W-pad.left-pad.right,plotH=H-pad.top-pad.bottom;
+  const data=st.results?.data||[];
+  if(data.length<2){ctx.fillStyle='#888';ctx.font='14px Source Sans 3';ctx.textAlign='center';ctx.fillText('Insufficient data points',W/2,H/2);return;}
+  const sorted=[...data].sort((a,b)=>a.period-b.period);
+  const has0=sorted.some(d=>d.period===0);
+  const all=has0?sorted:[...sorted.filter(d=>d.period<0),{period:0,estimate:0,std_error:0,lb:0,ub:0},...sorted.filter(d=>d.period>0)].sort((a,b)=>a.period-b.period);
+  const periods=all.map(d=>d.period),minP=Math.min(...periods),maxP=Math.max(...periods);
+  let vals=[];all.forEach(d=>{vals.push(d.lb,d.ub,d.estimate);});
+  let minY=Math.min(...vals),maxY=Math.max(...vals);const yP=(maxY-minY)*0.12||0.01;minY-=yP;maxY+=yP;
+  const sx=p=>pad.left+(p-minP)/(maxP-minP)*plotW;
+  const sy=v=>pad.top+(1-(v-minY)/(maxY-minY))*plotH;
+  const PRE='#3b82f6',POST='#b91c1c',ZERO='#e0d6c8',LINE='rgba(180,180,180,0.5)';
+  const ci=st.results?.confidence_level||95;
+
+  // Grid
+  ctx.strokeStyle='rgba(255,255,255,0.05)';ctx.lineWidth=1;
+  for(let i=0;i<=6;i++){const v=minY+(maxY-minY)*i/6,y=sy(v);ctx.beginPath();ctx.moveTo(pad.left,y);ctx.lineTo(W-pad.right,y);ctx.stroke();ctx.fillStyle='#777';ctx.font='11px JetBrains Mono';ctx.textAlign='right';ctx.fillText(v.toFixed(4),pad.left-8,y+4);}
+  const range=maxP-minP;let step=range>100?20:range>50?10:range>20?5:range>10?2:1;
+  ctx.fillStyle='#777';ctx.font='11px JetBrains Mono';ctx.textAlign='center';
+  for(let p=Math.ceil(minP/step)*step;p<=maxP;p+=step)ctx.fillText(p,sx(p),H-pad.bottom+20);
+  ctx.fillStyle='#999';ctx.font='12px Source Sans 3';ctx.textAlign='center';ctx.fillText('Periods since treatment',W/2,H-4);
+  ctx.save();ctx.translate(14,H/2);ctx.rotate(-Math.PI/2);ctx.fillText('Estimate and '+ci+'% CI',0,0);ctx.restore();
+
+  // Zero + treatment lines
+  if(minY<=0&&maxY>=0){ctx.strokeStyle='rgba(255,255,255,0.2)';ctx.lineWidth=1.5;ctx.setLineDash([6,4]);ctx.beginPath();ctx.moveTo(pad.left,sy(0));ctx.lineTo(W-pad.right,sy(0));ctx.stroke();ctx.setLineDash([]);}
+  if(minP<=0&&maxP>=0){ctx.strokeStyle='rgba(255,255,255,0.15)';ctx.lineWidth=1;ctx.setLineDash([4,4]);ctx.beginPath();ctx.moveTo(sx(0),pad.top);ctx.lineTo(sx(0),H-pad.bottom);ctx.stroke();ctx.setLineDash([]);}
+
+  // Grey line
+  ctx.strokeStyle=LINE;ctx.lineWidth=1.5;ctx.beginPath();
+  all.forEach((d,i)=>{const x=sx(d.period),y=sy(d.estimate);i===0?ctx.moveTo(x,y):ctx.lineTo(x,y);});ctx.stroke();
+
+  // Error bars + dots
+  const many=all.length>40,dotR=many?2.5:5;
+  all.forEach(d=>{
+    const x=sx(d.period),yE=sy(d.estimate),yU=sy(d.ub),yL=sy(d.lb);
+    const color=d.period===0?ZERO:(d.period<0?PRE:POST);
+    if(d.std_error!==0){ctx.strokeStyle=color;ctx.lineWidth=many?1:2;ctx.beginPath();ctx.moveTo(x,yU);ctx.lineTo(x,yL);ctx.stroke();
+      if(!many){ctx.beginPath();ctx.moveTo(x-4,yU);ctx.lineTo(x+4,yU);ctx.moveTo(x-4,yL);ctx.lineTo(x+4,yL);ctx.stroke();}}
+    ctx.beginPath();ctx.arc(x,yE,dotR,0,Math.PI*2);ctx.fillStyle=color;ctx.fill();
+    if(!many){ctx.strokeStyle='rgba(0,0,0,0.3)';ctx.lineWidth=1;ctx.stroke();}
+  });
+
+  // Legend
+  const lx=W-pad.right-200,ly=pad.top+5;
+  ctx.fillStyle='rgba(26,26,46,0.7)';ctx.fillRect(lx-10,ly-8,210,28);
+  ctx.beginPath();ctx.arc(lx,ly+5,5,0,Math.PI*2);ctx.fillStyle=PRE;ctx.fill();
+  ctx.fillStyle='#ccc';ctx.font='11px Source Sans 3';ctx.textAlign='left';ctx.fillText('Placebos (pre)',lx+10,ly+9);
+  ctx.beginPath();ctx.arc(lx+110,ly+5,5,0,Math.PI*2);ctx.fillStyle=POST;ctx.fill();
+  ctx.fillStyle='#ccc';ctx.fillText('Effects (post)',lx+120,ly+9);
+
+  // Tooltip
+  canvas.onmousemove=e=>{
+    const cr=canvas.getBoundingClientRect(),mx=e.clientX-cr.left,my=e.clientY-cr.top;
+    let near=null,md=1e9;
+    all.forEach(d=>{const dist=Math.hypot(mx-sx(d.period),my-sy(d.estimate));if(dist<md){md=dist;near=d;}});
+    if(near&&md<40){
+      const lbl=near.period===0?'Reference':(near.period<0?'Placebo':'Effect');
+      tooltip.classList.add('visible');
+      tooltip.innerHTML=`<div class="tt-row"><span class="tt-label">Period</span><span class="tt-val">${near.period} (${lbl})</span></div>
+        <div class="tt-row"><span class="tt-label">Estimate</span><span class="tt-val">${near.estimate.toFixed(5)}</span></div>
+        <div class="tt-row"><span class="tt-label">Std. Error</span><span class="tt-val">${near.std_error.toFixed(5)}</span></div>
+        <div class="tt-row"><span class="tt-label">${ci}% CI</span><span class="tt-val">[${near.lb.toFixed(4)}, ${near.ub.toFixed(4)}]</span></div>`;
+      let tx=sx(near.period)+12,ty=sy(near.estimate)-60;
+      if(tx+220>W)tx=sx(near.period)-230;if(ty<0)ty=10;
+      tooltip.style.left=tx+'px';tooltip.style.top=ty+'px';
+    }else tooltip.classList.remove('visible');
+  };
+  canvas.onmouseleave=()=>tooltip.classList.remove('visible');
+}
+
+window.addEventListener('resize',()=>{if(filteredStudies[selectedIdx])drawChart(filteredStudies[selectedIdx]);});
+loadStudies();
+</script>
+</body>
+</html>
